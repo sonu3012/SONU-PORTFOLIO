@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ p.name }} | {{ p.roles[0] }}</title>
+  <meta name="description" content="{{ p.tagline }}">
+  <meta name="theme-color" content="#ff4d1f">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- Loader -->
+<div class="loader" id="loader"><span>{{ p.brand }}<i>.</i></span></div>
+<div class="progress" id="progress"></div>
+
+<!-- Navbar -->
+<header class="nav" id="nav">
+  <a href="#home" class="logo">{{ p.brand }}<i>.</i></a>
+  <nav class="links" id="links">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a href="#contact" class="pill hire">Hire Me</a>
+  <button class="burger" id="burger" aria-label="Menu"><span></span><span></span></button>
+</header>
+
+<!-- Side socials -->
+<aside class="side">
+  <a href="{{ p.github }}" target="_blank" rel="noopener" aria-label="GitHub">GH</a>
+  <a href="{{ p.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn">IN</a>
+  <a href="mailto:{{ p.email }}" aria-label="Email">@</a>
+</aside>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-copy">
+    <p class="eyebrow">{{ p.open_to }}</p>
+    <h1>Hi, I'm {{ p.name }},<br><span class="role" id="role" data-roles='{{ p.roles|tojson }}'>{{ p.roles[0] }}</span><b class="caret">|</b></h1>
+    <p class="lead">{{ p.tagline }}</p>
+    <div class="btns">
+      <a href="#projects" class="pill white">View My Work</a>
+      <a href="#contact" class="pill dark">Contact Me</a>
+      <a href="{{ url_for('resume') }}" class="pill ghost">Download Resume</a>
+    </div>
+  </div>
+  <div class="hero-photo">
+    {% if has_photo %}
+      <img src="{{ url_for('static', filename='img/profile.png') }}" alt="{{ p.name }}">
+    {% else %}
+      <div class="mono">SK</div>
+    {% endif %}
+  </div>
+  <span class="spark s1">✦</span><span class="spark s2">✦</span>
+</section>
+
+<svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+  <path fill="#ff4d1f" d="M0,0H1440V60C1260,120 1080,0 900,50C720,100 540,10 360,50C180,90 90,70 0,40Z"/>
+</svg>
+
+<!-- ABOUT -->
+<section class="about reveal" id="about">
+  <div class="about-card">
+    <div class="id-card tilt">
+      {% if has_photo %}
+        <img src="{{ url_for('static', filename='img/profile.png') }}" alt="{{ p.name }}">
+      {% else %}
+        <div class="mono sm">SK</div>
+      {% endif %}
+      <small>{{ p.name }}</small>
+    </div>
+  </div>
+  <div class="about-copy">
+    <h2>Hello!</h2>
+    {% for para in p.about %}<p>{{ para }}</p>{% endfor %}
+    <div class="stats">
+      {% for s in stats %}<div><strong data-count="{{ s.value }}">{{ s.value }}</strong><span>{{ s.label }}</span></div>{% endfor %}
+    </div>
+    <p class="loc">📍 {{ p.location }}</p>
+  </div>
+</section>
+
+<svg class="wave flip" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+  <path fill="#ff4d1f" d="M0,0H1440V60C1260,120 1080,0 900,50C720,100 540,10 360,50C180,90 90,70 0,40Z"/>
+</svg>
+
+<!-- SKILLS -->
+<section class="skills dark reveal" id="skills">
+  <span class="badge">Technical Stack</span>
+  <h2 class="title caps">My Skillset</h2>
+  <p class="sub">The languages, frameworks and tools I use to build AI and data products.</p>
+  <div class="grid skill-grid">
+    {% for g in skills %}
+    <article class="card">
+      <div class="ico">{{ g.icon }}</div>
+      <h3>{{ g.title }}</h3>
+      <div class="chips">{% for i in g["items"] %}<span>{{ i }}</span>{% endfor %}</div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- PROCESS (white) -->
+<section class="process reveal">
+  <span class="badge light">My Process</span>
+  <h2 class="title">Here's how I turn ideas into <em>real-world</em> applications</h2>
+  <div class="steps">
+    {% for s in process %}
+    <div class="step"><b>{{ s.step }}</b><h3>{{ s.title }}</h3><p>{{ s.text }}</p></div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects dark reveal" id="projects">
+  <span class="badge">Featured Projects</span>
+  <h2 class="title">Work that speaks<br>for itself</h2>
+  <p class="sub">A selection of projects that show my work in AI, data science and web development.</p>
+  <div class="proj-list">
+    {% for pr in projects %}
+    <article class="proj card">
+      <span class="num">0{{ loop.index }}</span>
+      <div class="proj-body">
+        <span class="tag">{{ pr.tag }}</span>
+        <h3>{{ pr.title }}</h3>
+        <p>{{ pr.text }}</p>
+        <div class="chips">{% for t in pr.stack %}<span>{{ t }}</span>{% endfor %}</div>
+        <div class="proj-links">
+          {% if pr.github %}<a href="{{ pr.github }}" target="_blank" rel="noopener">GitHub ↗</a>{% endif %}
+          {% if pr.live %}<a href="{{ pr.live }}" target="_blank" rel="noopener">Live Demo ↗</a>{% endif %}
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  <a href="{{ p.github }}" target="_blank" rel="noopener" class="pill orange center">Explore all repositories →</a>
+</section>
+
+<svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+  <path fill="#ff4d1f" d="M0,0H1440V60C1260,120 1080,0 900,50C720,100 540,10 360,50C180,90 90,70 0,40Z" transform="rotate(180 720 60)"/>
+</svg>
+
+<!-- EXPERIENCE -->
+<section class="exp orange reveal" id="experience">
+  <h2 class="title caps">Work Experience</h2>
+  <p class="sub">Hands-on internships where I applied what I learned.</p>
+</section>
+<section class="dark timeline-wrap reveal">
+  <div class="timeline">
+    {% for e in experience %}
+    <div class="t-item">
+      <span class="dot"></span>
+      <div class="card">
+        <span class="tag">{{ e.period }}</span>
+        <h3>{{ e.company }}</h3>
+        <em>{{ e.role }}</em>
+        {% if e.points %}<ul>{% for pt in e.points %}<li>{{ pt }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <h2 class="title caps small">Education</h2>
+  <div class="grid two">
+    {% for ed in education %}
+    <article class="card"><span class="tag">{{ ed.detail }}</span><h3>{{ ed.degree }}</h3><p>{{ ed.school }}</p></article>
+    {% endfor %}
+  </div>
+</section>
+
+<svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" style="background:#0a0a0a">
+  <path fill="#ff4d1f" d="M0,120H1440V60C1260,0 1080,120 900,70C720,20 540,110 360,70C180,30 90,50 0,80Z"/>
+</svg>
+
+<!-- CERTIFICATIONS -->
+<section class="certs orange reveal">
+  <h2 class="title caps">Certifications</h2>
+  <p class="sub dim">Industry-recognised programs that sharpen my technical skills.</p>
+  <div class="grid cert-grid">
+    {% for c in certs %}
+    <article class="card light-card"><span class="tag dk">{{ c.date }}</span><h3>{{ c.title }}</h3><p>{{ c.issuer }}</p></article>
+    {% endfor %}
+  </div>
+   {% if p.certificates_link %}
+  <a href="{{ p.certificates_link }}" target="_blank" rel="noopener" class="pill dark center">View all certificates ↗</a>
+  {% endif %}
+</section>
+
+<!-- CONTACT -->
+<section class="contact reveal" id="contact">
+  <h2 class="giant">CONTACT</h2>
+  <form class="panel" id="form" novalidate>
+    <h3>Let's build something together</h3>
+    <p>{{ p.open_to }}</p>
+    <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off">
+    <div class="row">
+      <label>Name<input type="text" name="name" placeholder="Your name" required></label>
+      <label>Email<input type="email" name="email" placeholder="you@email.com" required></label>
+    </div>
+    <label>Message<textarea name="message" rows="4" placeholder="Type your message here" required></textarea></label>
+    <div class="form-foot">
+      <button type="submit" class="pill dark" id="send">Send message</button>
+      <span class="status" id="status"></span>
+    </div>
+    <div class="direct">
+      <a href="mailto:{{ p.email }}">{{ p.email }}</a>
+      <a href="{{ p.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="{{ p.github }}" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </form>
+</section>
+
+<footer class="footer">
+  <div class="big">Sonu Kumar Ray</div>
+  <div class="foot-row">
+    <span>© {{ p.name }}</span>
+    <span>Built with Flask · HTML · CSS · JS</span>
+    <a href="#home">Back to top ↑</a>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
